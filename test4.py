@@ -636,8 +636,12 @@ def home_page():
 
 def main():
 
-    
-    supabase: Client = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"]) #create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+        # Create the Supabase client using Streamlit secrets
+    supabase: Client = create_client(
+        st.secrets["supabase"]["SUPABASE_URL"], 
+        st.secrets["supabase"]["SUPABASE_KEY"]
+    )
+
 
     # Initialize session state
     if 'logged_in' not in st.session_state:
