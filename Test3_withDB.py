@@ -600,6 +600,55 @@ def home_page():
     # Display the plot
     st.plotly_chart(fig)
 
+def display_analysis_history():
+    if "user_id" in st.session_state:
+        user_id = st.session_state["user_id"]
+        today = todays_date()  # Get today's date
+        
+        # Query meals for today only
+        result = (supabase.table("Meals")
+                 .select("*")
+                 .eq("user_id", user_id)
+                 .eq("date", today)
+                 .order("timestamp")  # Order by timestamp
+                 .execute())
+        
+        if result.data:
+            # Convert to DataFrame
+            df = pd.DataFrame(result.data)
+            
+            # Convert timestamp strings to datetime
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            
+            # Calculate cumulative calories
+            df['cumulative_calories'] = df['meal_cal'].cumsum()
+            
+            # Create cumulative calories plot
+            fig = px.line(df, 
+                         x='timestamp', 
+                         y='cumulative_calories',
+                         title=f'Cumulative Calorie Intake for {today}',
+                         labels={'timestamp': 'Time', 
+                                'cumulative_calories': 'Total Calories'})
+            
+            fig.update_layout(
+                xaxis_title="Time",
+                yaxis_title="Total Calories Consumed",
+                hovermode='x'
+            )
+            
+            st.plotly_chart(fig)
+            
+            # Display meals table
+            st.write("Today's Meals:")
+            for entry in result.data:
+                with st.expander(f"Meal at {entry['timestamp'].strftime('%H:%M')}"):
+                    st.write(f"Calories: {entry['meal_cal']}")
+                    st.write(f"Foods Detected: {entry['foods_detected']}")
+        else:
+            st.info("No meals recorded today.")
+    else:
+        st.warning("Please login to view your meal history.")
 
 def main():
     load_dotenv()
