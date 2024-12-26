@@ -29,8 +29,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-load_dotenv()
-
 # Initialize Supabase client
 SUPABASE_URL = st.secrets["supabase"]["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["supabase"]["SUPABASE_KEY"]
