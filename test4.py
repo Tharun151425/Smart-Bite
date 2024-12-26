@@ -617,7 +617,7 @@ def home_page():
             {
                 "Time": parser.isoparse(entry["timestamp"]).strftime("%Y-%m-%d %H:%M:%S"),
                 "Meal Calories": entry["meal_cal"],
-                "Foods Detected": ", ".join(i for i in entry["foods_detected"] or [])
+                "Foods Detected": ", ".join([food.split(":")[0] for food in entry["foods_detected"] or []])
             }
             for entry in filtered_history[::-1]  # Reverse to display most recent first
         ])

@@ -1,3 +1,4 @@
 
 .env
 test_images/output/temp_image_output.jpg
+*.toml

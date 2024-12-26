@@ -575,6 +575,30 @@ def home_page():
         unsafe_allow_html=True
     )
 
+    # Assuming you have a dataframe 'df' with 'calories' and 'timestamp' columns
+
+    # Sort the dataframe by timestamp
+    df = df.sort_values('timestamp')
+
+    # Calculate cumulative sum of calories
+    df['cumulative_calories'] = df['calories'].cumsum()
+
+    # Create the line plot with cumulative calories
+    fig = px.line(df, 
+                x='timestamp', 
+                y='cumulative_calories',
+                title='Cumulative Calorie Intake Over Time',
+                labels={'timestamp': 'Time', 'cumulative_calories': 'Total Calories'})
+
+    # Customize the layout
+    fig.update_layout(
+        xaxis_title="Time",
+        yaxis_title="Cumulative Calories",
+        hovermode='x'
+    )
+
+    # Display the plot
+    st.plotly_chart(fig)
 
 
 def main():
@@ -587,11 +611,7 @@ def main():
     if 'page' not in st.session_state:
         st.session_state['page'] = 'login'
 
-    # Check for persistent login cookie
     user_token = cookie_deleter.get("login")
-    #st.write(cookie_deleter)
-    #st.markdown(user_token)
-    #st.write(st.session_state)
     
     
     if user_token:
